@@ -30,7 +30,6 @@ target_metadata = BaseModel.metadata
 from core.config import DatabaseENV
 config.set_main_option("sqlalchemy.url", DatabaseENV.DB_URL)
 
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
