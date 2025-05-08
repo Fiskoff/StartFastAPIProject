@@ -1,18 +1,34 @@
+from os import getenv
+
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 
+class EnvLoader:
+    load_dotenv()
+
+
+class DatabaseENV(EnvLoader):
+    DB_URL: str = getenv("DB_URL")
+
+
+class ServerENV(EnvLoader):
+    SERVER_HOST: str = getenv("SERVER_HOST")
+    SERVER_PORT: int = int(getenv("SERVER_PORT"))
+
+
 class RunConfig(BaseModel):
-    host: str = "127.0.0.1"
-    port: int = 8000
+    host: str = ServerENV.SERVER_HOST
+    port: int = ServerENV.SERVER_PORT
 
 
 class ApiPrefix(BaseModel):
     prefix: str = "/api"
 
 
-class BaseConfig(BaseModel):
-    url: str = "sqlite+aiosqlite://messenger.sqlite3"
+class DataBaseConfig(BaseModel):
+    url: str = DatabaseENV.DB_URL
     echo: bool = True
     pool_size: int = 10
     max_overflow: int = 15
@@ -21,7 +37,7 @@ class BaseConfig(BaseModel):
 class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
-    db: BaseConfig
+    db: DataBaseConfig = DataBaseConfig()
 
 
 settings = Settings()
