@@ -27,15 +27,6 @@ class DatabaseHelper:
             expire_on_commit=False
         )
 
-    async def dispose(self):
-        """Закрытие всех соединений с БД"""
-        await self.engine.dispose()
-
-    async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
-        """Получение и освобождение сессии БД"""
-        async with self.session_factory() as session:
-            yield session
-
 
 db_helper = DatabaseHelper(
     settings.db.url,
